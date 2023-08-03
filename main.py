@@ -70,7 +70,7 @@ class MainApp(App):
             Window.maximize()
         else:
             Window.size = (620, 1024)
-
+            
     def move_bird(self, time_passed):
         bird = self.root.ids.bird
         bird.x = bird.x + bird.velocity * time_passed

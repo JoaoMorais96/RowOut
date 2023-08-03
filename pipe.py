@@ -20,19 +20,20 @@ class Pipe(Widget):
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-        self.pipe_body_texture = Image(source="pipe_body.png").texture
+        self.pipe_body_texture = Image(source="pipe_body_rot.png").texture
         self.pipe_body_texture.wrap = 'repeat'
 
     def on_size(self, *args):
         lower_body_size = self.bottom_cap_position - self.bottom_body_position
 
-        self.lower_pipe_tex_coords[5] = lower_body_size/20.
-        self.lower_pipe_tex_coords[7] = lower_body_size/20.
+        self.lower_pipe_tex_coords[2] = lower_body_size/20.
+        self.lower_pipe_tex_coords[4] = lower_body_size/20.
 
-        top_body_size = self.top - self.top_body_position
+        top_body_size = 800 - self.top_body_position
 
-        self.top_pipe_tex_coords[5] = top_body_size/20.
-        self.top_pipe_tex_coords[7] = top_body_size/20.
+
+        self.top_pipe_tex_coords[2] = top_body_size/20.
+        self.top_pipe_tex_coords[4] = top_body_size/20.
 
     def on_pipe_center(self, *args):
         Clock.schedule_once(self.on_size, 0)

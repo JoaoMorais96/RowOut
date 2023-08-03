@@ -1,0 +1,3 @@
+- We have to make the right side pipe to be built from 
+the right side to the cap and place the cap and the center spot in the correct positions;
+- Ver melhor o espaçamento porque os tubos tão muito grandes

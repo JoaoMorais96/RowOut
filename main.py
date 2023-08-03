@@ -7,7 +7,8 @@ from kivy.clock import Clock
 import random
 from functools import partial
 from pipe import Pipe
-
+from kivy.config import Config
+Window.size = (800, 600)
 class Background(Widget):
     sky_texture = ObjectProperty(None)
     cloud_texture = ObjectProperty(None)
@@ -28,22 +29,18 @@ class Background(Widget):
 
         self.floor_texture = Image(source="floor.png").texture
         self.floor_texture.wrap = 'repeat'
-        self.floor_texture.uvsize = (Window.width / self.floor_texture.width, -1)
 
-        self.top_texture = Image(source="floor.png").texture
+        self.top_texture = Image(source="floor2.png").texture
         self.top_texture.wrap = 'repeat'
-        self.top_texture.uvsize = (Window.width / self.top_texture.width, -1)
 
     def on_size(self, *args):
         self.cloud_texture.uvsize = (self.width / self.cloud_texture.width, -1)
-        self.floor_texture.uvsize = (self.width / self.floor_texture.width, -1)
-        self.top_texture.uvsize = (self.width / self.top_texture.width, -1)
 
     def scroll_textures(self, time_passed):
         # Update the uvpos of the texture
         self.cloud_texture.uvpos = ( (self.cloud_texture.uvpos[0] + time_passed/2.0)%Window.width , self.cloud_texture.uvpos[1])
-        self.floor_texture.uvpos = ( (self.floor_texture.uvpos[0] + time_passed)%Window.width, self.floor_texture.uvpos[1])
-        self.top_texture.uvpos = ( (self.top_texture.uvpos[0] + time_passed)%Window.width, self.top_texture.uvpos[1])
+        self.floor_texture.uvpos = ( self.floor_texture.uvpos[0], (self.floor_texture.uvpos[1] + time_passed)%Window.height)
+        self.top_texture.uvpos = ( self.top_texture.uvpos[0], (self.top_texture.uvpos[1] + time_passed)%Window.height)
 
         # Redraw the texture
         texture = self.property('cloud_texture')
@@ -83,25 +80,29 @@ class MainApp(App):
 
     def move_bird(self, time_passed):
         bird = self.root.ids.bird
-        bird.y = bird.y + bird.velocity * time_passed
+        bird.x = bird.x + bird.velocity * time_passed
         bird.velocity = bird.velocity - self.GRAVITY * time_passed
         self.check_collision()
 
     def check_collision(self):
         bird = self.root.ids.bird
+
         # Go through each pipe and check if it collides
         is_colliding = False
         for pipe in self.pipes:
-            if pipe.collide_widget(bird):
+
+            if  bird.y>=pipe.y-32 and bird.y<=pipe.y+32:
+
                 is_colliding = True
                 # Check if bird is between the gap
-                if bird.y < (pipe.pipe_center - pipe.GAP_SIZE/1.7):
+                if bird.x < (pipe.pipe_center - pipe.GAP_SIZE/2.0):
                     self.game_over()
-                if bird.top > (pipe.pipe_center + pipe.GAP_SIZE/1.7):
+                if bird.x > (pipe.pipe_center + pipe.GAP_SIZE/2.0):
+                    print(2)
                     self.game_over()
-        if bird.y < 96:
+        if bird.x < 96:
             self.game_over()
-        if bird.top > Window.height:
+        if bird.x > Window.width-96:
             self.game_over()
 
         if self.was_colliding and not is_colliding:
@@ -109,7 +110,7 @@ class MainApp(App):
         self.was_colliding = is_colliding
 
     def game_over(self):
-        self.root.ids.bird.pos = (20, (self.root.height - 96) / 2.0)
+        self.root.ids.bird.pos = ((self.root.width-50)/2.0, (self.root.height - 96) / 2.0)
         for pipe in self.pipes:
             self.root.remove_widget(pipe)
         self.frames.cancel()
@@ -165,13 +166,16 @@ class MainApp(App):
 
         # Create the pipes
         num_pipes = 5
-        distance_between_pipes = Window.width / (num_pipes - 1)
+        distance_between_pipes = Window.height / (num_pipes - 1)
         for i in range(num_pipes):
             pipe = Pipe()
-            pipe.pipe_center = randint(96 + 100, self.root.height - 100)
+            const_spacing = 96
+            pipe.pipe_center = randint(const_spacing+100, self.root.width - 100-96)
+            #pipe.pipe_center = randint( self.root.width,0)
             pipe.size_hint = (None, None)
-            pipe.pos = (Window.width + i*distance_between_pipes, 96)
-            pipe.size = (64, self.root.height - 96)
+            pipe.pos = (96, Window.height + i*distance_between_pipes)#AQUI
+            pipe.size = (64, self.root.width - (const_spacing))#AQUI
+
 
             self.pipes.append(pipe)
             self.root.add_widget(pipe)
@@ -182,25 +186,15 @@ class MainApp(App):
     def move_pipes(self, time_passed):
         # Move pipes
         for pipe in self.pipes:
-            pipe.x -= time_passed * 100
+            pipe.y -= time_passed * 100
 
         # Check if we need to reposition the pipe at the right side
         num_pipes = 5
-        distance_between_pipes = Window.width / (num_pipes - 1)
-        pipe_xs = list(map(lambda pipe: pipe.x, self.pipes))
+        distance_between_pipes = Window.height / (num_pipes - 1)
+        pipe_xs = list(map(lambda pipe: pipe.y, self.pipes))
         right_most_x = max(pipe_xs)
         if right_most_x <= Window.width - distance_between_pipes:
             most_left_pipe = self.pipes[pipe_xs.index(min(pipe_xs))]
-            most_left_pipe.x = Window.width
-
-
-
-
-
-
-
-
-
-
+            most_left_pipe.y = Window.width
 
 MainApp().run()

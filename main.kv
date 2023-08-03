@@ -6,19 +6,19 @@ FloatLayout:
         canvas.before:
             Rectangle:
                 size: self.size
-                pos: self.pos
+                pos: self.pos[0], self.pos[1]
                 texture: self.sky_texture
             Rectangle:
                 size: self.width, 138
                 pos: self.pos[0], self.pos[1] + self.height - 138
                 texture: self.cloud_texture
             Rectangle:
-                size: self.width, 96
-                pos: self.pos[0], self.pos[1]
+                size: 96, self.height
+                pos: 0, self.pos[1] 
                 texture: self.floor_texture
             Rectangle:
-                size: self.width, 96
-                pos: self.pos[0], self.pos[1] + self.height - 96
+                size: 96, self.height
+                pos: 800-96, self.pos[1] 
                 texture: self.top_texture
     Label:
         id: score
@@ -39,5 +39,5 @@ FloatLayout:
         source: "bird1.png"
         size_hint: None, None
         size: 46, 34
-        pos: 20, (root.height - 96) / 2.0
+        pos: (root.width-50)/2.0, (root.height - 96)/2.0
         id: bird

@@ -18,10 +18,22 @@ class Background(Widget):
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
+        load_zipped_png_files_left = Image(
+            source = 'to_left_frames.zip', 
+            anim_delay = 0,
+            allow_stretch = True, 
+            keep_ratio = False,
+            keep_data = True)
+        load_zipped_png_files_right = Image(
+            source = 'to_right_frames.zip', 
+            anim_delay = 0,
+            allow_stretch = True, 
+            keep_ratio = False,
+            keep_data = True)
         # Create textures
-        self.sky_texture = Image(source="sky.png").texture
-        self.sky_texture.wrap = 'repeat'
-        self.sky_texture.uvsize = (Window.width / self.sky_texture.width, -1)
+        self.sky_texture = Image(source="transparent.png").texture
+        # self.sky_texture.wrap = 'repeat'
+        # self.sky_texture.uvsize = (Window.width / self.sky_texture.width, -1)
 
         # Create textures
         self.cloud_texture = Image(source="cloud.png").texture
@@ -124,11 +136,11 @@ class MainApp(App):
 
         if(num>3000):
             if self.sea_direction == 'Up':
-                self.root.ids.background.sky_texture = Image(source="sky.png").texture
+                self.root.ids.gif.source = "to_left_frames.zip"
                 Clock.schedule_once(self.inact_change_down, 2)
 
             elif self.sea_direction == 'Down':
-                self.root.ids.background.sky_texture = Image(source="sky2.png").texture
+                self.root.ids.gif.source = source="to_right_frames.zip"
                 Clock.schedule_once(self.inact_change_up, 2)
 
     #Actutally changes the tide direction 2 minutes after the background change
@@ -143,7 +155,7 @@ class MainApp(App):
 
 
     def start_game(self):
-        self.root.ids.background.sky_texture = Image(source="sky.png").texture
+        self.root.ids.gif.source = "to_left_frames.zip"
         self.GRAVITY = 300
         self.sea_direction = 'Down'
         self.root.ids.bird.sea_direction= 'Down'

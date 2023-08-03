@@ -8,10 +8,16 @@ FloatLayout:
                 size: self.size
                 pos: self.pos[0], self.pos[1]
                 texture: self.sky_texture
-            Rectangle:
-                size: self.width, 138
-                pos: self.pos[0], self.pos[1] + self.height - 138
-                texture: self.cloud_texture
+    Image:
+        id: gif
+        source: 'to_left_frames.zip'
+        pos: self.pos
+        size_hint: None, None
+        size: root.size
+        allow_stretch: True
+        keep_ratio: False
+        size_hint_y: 1
+
     Label:
         id: score
         size_hint_y: None

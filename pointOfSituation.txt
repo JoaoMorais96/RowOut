@@ -1,3 +1,4 @@
 - meter A AREIA com tamanho para fazer sentido com os pipes
+- make small things like sharks appear randomly on screen a few pipes away fromm the boat
 - Menu
 - Gráficos

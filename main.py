@@ -28,10 +28,10 @@ class Background(Widget):
         self.cloud_texture.wrap = 'repeat'
         self.cloud_texture.uvsize = (Window.width / self.cloud_texture.width, -1)
 
-        self.floor_texture = Image(source="floor.png").texture
+        self.floor_texture = Image(source="sand.png").texture
         self.floor_texture.wrap = 'repeat'
 
-        self.top_texture = Image(source="floor2.png").texture
+        self.top_texture = Image(source="sand.png").texture
         self.top_texture.wrap = 'repeat'
 
     def on_size(self, *args):
@@ -40,8 +40,10 @@ class Background(Widget):
     def scroll_textures(self, time_passed):
         # Update the uvpos of the texture
         self.cloud_texture.uvpos = ( (self.cloud_texture.uvpos[0] + time_passed/2.0)%Window.width , self.cloud_texture.uvpos[1])
-        self.floor_texture.uvpos = ( self.floor_texture.uvpos[0], (self.floor_texture.uvpos[1] + time_passed)%Window.height)
-        self.top_texture.uvpos = ( self.top_texture.uvpos[0], (self.top_texture.uvpos[1] + time_passed)%Window.height)
+        # self.floor_texture.uvpos = ( self.floor_texture.uvpos[0], (self.floor_texture.uvpos[1] + time_passed)%Window.height)
+        # self.top_texture.uvpos = ( self.top_texture.uvpos[0], (self.top_texture.uvpos[1] + time_passed)%Window.height)
+        self.floor_texture.uvpos = ( self.floor_texture.uvpos[0], (self.floor_texture.uvpos[1] - time_passed)%Window.height)
+        self.top_texture.uvpos = ( self.top_texture.uvpos[0], (self.top_texture.uvpos[1] - time_passed)%Window.height)
 
         # Redraw the texture
         texture = self.property('cloud_texture')

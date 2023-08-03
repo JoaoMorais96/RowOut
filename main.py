@@ -8,7 +8,8 @@ import random
 from functools import partial
 from pipe import Pipe
 from kivy.config import Config
-Window.size = (800, 600)
+from kivy.utils import platform
+
 class Background(Widget):
     sky_texture = ObjectProperty(None)
     cloud_texture = ObjectProperty(None)
@@ -77,6 +78,12 @@ class Bird(Image):
 class MainApp(App):
     pipes = []
     was_colliding = False
+    def build(self):
+        self.wall_thickness = 96
+        if(platform == 'android' or platform == 'ios'):
+            Window.maximize()
+        else:
+            Window.size = (620, 1024)
 
     def move_bird(self, time_passed):
         bird = self.root.ids.bird
@@ -98,11 +105,10 @@ class MainApp(App):
                 if bird.x < (pipe.pipe_center - pipe.GAP_SIZE/2.0):
                     self.game_over()
                 if bird.x > (pipe.pipe_center + pipe.GAP_SIZE/2.0):
-                    print(2)
                     self.game_over()
-        if bird.x < 96:
+        if bird.x < self.wall_thickness:
             self.game_over()
-        if bird.x > Window.width-96:
+        if bird.x > Window.width-self.wall_thickness:
             self.game_over()
 
         if self.was_colliding and not is_colliding:
@@ -110,7 +116,7 @@ class MainApp(App):
         self.was_colliding = is_colliding
 
     def game_over(self):
-        self.root.ids.bird.pos = ((self.root.width-50)/2.0, (self.root.height - 96) / 2.0)
+        self.root.ids.bird.pos = ((self.root.width-50)/2.0, (self.root.height - self.wall_thickness) / 2.0)
         for pipe in self.pipes:
             self.root.remove_widget(pipe)
         self.frames.cancel()
@@ -169,11 +175,11 @@ class MainApp(App):
         distance_between_pipes = Window.height / (num_pipes - 1)
         for i in range(num_pipes):
             pipe = Pipe()
-            const_spacing = 96
-            pipe.pipe_center = randint(const_spacing+100, self.root.width - 100-96)
+            const_spacing = self.wall_thickness
+            pipe.pipe_center = randint(const_spacing+100, self.root.width - 100-self.wall_thickness)
             #pipe.pipe_center = randint( self.root.width,0)
             pipe.size_hint = (None, None)
-            pipe.pos = (96, Window.height + i*distance_between_pipes)#AQUI
+            pipe.pos = (self.wall_thickness, Window.height + i*distance_between_pipes)#AQUI
             pipe.size = (64, self.root.width - (const_spacing))#AQUI
 
 
@@ -191,10 +197,22 @@ class MainApp(App):
         # Check if we need to reposition the pipe at the right side
         num_pipes = 5
         distance_between_pipes = Window.height / (num_pipes - 1)
-        pipe_xs = list(map(lambda pipe: pipe.y, self.pipes))
-        right_most_x = max(pipe_xs)
-        if right_most_x <= Window.width - distance_between_pipes:
-            most_left_pipe = self.pipes[pipe_xs.index(min(pipe_xs))]
-            most_left_pipe.y = Window.width
+        pipe_ys = list(map(lambda pipe: pipe.y, self.pipes))
+        right_most_y = min(pipe_ys)
+        if right_most_y <= 0:
+
+            most_down_pipe = self.pipes[pipe_ys.index(min(pipe_ys))]
+            self.pipes.remove(most_down_pipe)
+            self.root.remove_widget(most_down_pipe)
+
+            pipe = Pipe()
+            const_spacing = self.wall_thickness
+            pipe.pipe_center = randint(const_spacing+100, self.root.width - 100-self.wall_thickness)
+
+            pipe.size_hint = (None, None)
+            pipe.pos = (self.wall_thickness, Window.height + distance_between_pipes)#AQUI
+            pipe.size = (64, self.root.width - (const_spacing))#AQUI
+            self.pipes.append(pipe)
+            self.root.add_widget(pipe)
 
 MainApp().run()

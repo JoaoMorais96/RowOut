@@ -174,7 +174,7 @@ class MainApp(App):
         num_pipes = 5
         distance_between_pipes = Window.height / (num_pipes - 1)
         for i in range(num_pipes):
-            pipe = Pipe()
+            pipe = Pipe(self.root.width)
             const_spacing = self.wall_thickness
             pipe.pipe_center = randint(const_spacing+100, self.root.width - 100-self.wall_thickness)
             #pipe.pipe_center = randint( self.root.width,0)
@@ -205,7 +205,7 @@ class MainApp(App):
             self.pipes.remove(most_down_pipe)
             self.root.remove_widget(most_down_pipe)
 
-            pipe = Pipe()
+            pipe = Pipe(self.root.width)
             const_spacing = self.wall_thickness
             pipe.pipe_center = randint(const_spacing+100, self.root.width - 100-self.wall_thickness)
 

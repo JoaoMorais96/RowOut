@@ -17,6 +17,12 @@ FloatLayout:
         allow_stretch: True
         keep_ratio: False
         size_hint_y: 1
+    Image:
+        id: logo
+        source: 'LOGO.png'
+        size_hint_y: None
+        pos_hint: {'top': 0.8}
+        size: 70,70
 
     Label:
         id: score
@@ -26,16 +32,19 @@ FloatLayout:
         font_size: 40
     Button:
         text: "Start game"
+        font_size: 60
+        pos_hint: {'top': 0.75}
         background_normal: "transparent.png"
         background_down: "transparent.png"
         id: start_button
         on_release:
             self.disabled = True
             self.opacity = 0
+            root.remove_widget(root.ids.logo)
             app.start_game()
     Bird:
         source: "bird1.png"
         size_hint: None, None
         size: 46, 34
-        pos: (root.width-50)/2.0, (root.height - 96)/2.0
+        pos: (root.width-50)/2.0, (root.height)/2.0-100
         id: bird

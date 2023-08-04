@@ -4,6 +4,7 @@ from kivy.properties import ObjectProperty
 from kivy.uix.image import Image
 from kivy.core.window import Window
 from kivy.clock import Clock
+from kivy.storage.jsonstore import JsonStore
 import random
 from functools import partial
 from pipe import Pipe
@@ -113,7 +114,7 @@ class MainApp(App):
         self.was_colliding = is_colliding
 
     def game_over(self):
-        self.root.ids.bird.pos = ((self.root.width-50)/2.0, (self.root.height - self.wall_thickness) / 2.0)
+        self.root.ids.bird.pos = ((self.root.width-50)/2.0, (self.root.height - self.wall_thickness) / 2.0 - 100)
         for pipe in self.pipes:
             self.root.remove_widget(pipe)
         self.frames.cancel()

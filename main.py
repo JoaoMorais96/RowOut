@@ -32,8 +32,7 @@ class Background(Widget):
             keep_data = True)
         # Create textures
         self.sky_texture = Image(source="transparent.png").texture
-        # self.sky_texture.wrap = 'repeat'
-        # self.sky_texture.uvsize = (Window.width / self.sky_texture.width, -1)
+
 
         # Create textures
         self.cloud_texture = Image(source="cloud.png").texture
@@ -183,9 +182,6 @@ class MainApp(App):
 
             self.pipes.append(pipe)
             self.root.add_widget(pipe)
-
-        # Move the pipes
-        #Clock.schedule_interval(self.move_pipes, 1/60.)
 
     def move_pipes(self, time_passed):
         # Move pipes
